@@ -63,11 +63,13 @@ public class SlackServerAdapter extends BuildServerAdapter {
         else
         {
             //TODO - modify in future if we care about other states
+            if(build.getBuildStatus().isFailed()){
+                processFailedBuild(build);
+            }
         }
     }
 
-    private void processSuccessfulBuild(SRunningBuild build) {
-
+    private void processBuild(SRunningBuild build, boolean successful){
         SlackProjectSettings projectSettings = (SlackProjectSettings) projectSettingsManager.getSettings(build.getProjectId(),"slackSettings");
 
         if( ! projectSettings.isEnabled() )
@@ -122,12 +124,12 @@ public class SlackServerAdapter extends BuildServerAdapter {
             String finalUrl = slackConfig.getPostUrl() + slackConfig.getToken();
             URL url = new URL(finalUrl);
 
-            String message = "";
+            String message = successful ? "succeeded" : "failed";
 
             JsonObject payloadObj = new JsonObject();
             payloadObj.addProperty("channel" , channel);
             payloadObj.addProperty("username" , "TeamCity");
-            payloadObj.addProperty("text", String.format("Project '%s' built successfully." , build.getFullName()));
+            payloadObj.addProperty("text", String.format("Project '%s' build %s." , build.getFullName(), message));
             payloadObj.addProperty("icon_url",slackConfig.getLogoUrl());
 
             if( commitMsg.length() > 0 )
@@ -136,7 +138,10 @@ public class SlackServerAdapter extends BuildServerAdapter {
                 JsonObject attachment = new JsonObject();
 
                 attachment.addProperty("fallback", "Changes by"+ commitMsg);
-                attachment.addProperty("color","good");
+
+                String color = successful ? "good" : "danger";
+
+                attachment.addProperty("color",color);
 
                 JsonArray fields = new JsonArray();
                 JsonObject field = new JsonObject() ;
@@ -176,6 +181,14 @@ public class SlackServerAdapter extends BuildServerAdapter {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void processSuccessfulBuild(SRunningBuild build) {
+        processBuild(build, true);
+    }
+
+    private void processFailedBuild(SRunningBuild build){
+        processBuild(build, false);
     }
 
 }
