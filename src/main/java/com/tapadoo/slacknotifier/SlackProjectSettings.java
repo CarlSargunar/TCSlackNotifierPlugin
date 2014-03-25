@@ -54,7 +54,7 @@ public class SlackProjectSettings implements ProjectSettings {
         }
         else
         {
-            enabled = true ;
+            enabled = false ;
         }
 
         if( channelElement != null ) {
