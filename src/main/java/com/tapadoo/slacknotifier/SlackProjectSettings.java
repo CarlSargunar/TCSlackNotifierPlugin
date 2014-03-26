@@ -12,7 +12,7 @@ public class SlackProjectSettings implements ProjectSettings {
 
     private String projectId;
     private String channel;
-    private boolean enabled = true ;
+    private boolean enabled = false ;
 
     public SlackProjectSettings(String projectId) {
         this.projectId = projectId ;
@@ -49,7 +49,7 @@ public class SlackProjectSettings implements ProjectSettings {
             try {
                 enabled = enabledAttr.getBooleanValue() ;
             } catch (DataConversionException e) {
-                enabled = true ;
+                enabled = false ;
             }
         }
         else
