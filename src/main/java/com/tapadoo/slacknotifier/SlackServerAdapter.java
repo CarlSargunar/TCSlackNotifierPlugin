@@ -97,7 +97,7 @@ public class SlackServerAdapter extends BuildServerAdapter {
                 if( commiterName != null && !commiterName.equals(""))
                 {
                     committersString.append(commiterName);
-                    committersString.append(",");
+                    committersString.append(", ");
                 }
             }
         }
@@ -105,7 +105,13 @@ public class SlackServerAdapter extends BuildServerAdapter {
         if( committersString.length() > 0 )
         {
             committersString.deleteCharAt(committersString.length()-1); //remove the last ,
+            int lastCommaIndex = committersString.lastIndexOf(",");
+
+            if(lastCommaIndex >= 0)
+                committersString.replace(lastCommaIndex, lastCommaIndex + 1, " &");
         }
+
+
 
         String commitMsg = committersString.toString();
 
