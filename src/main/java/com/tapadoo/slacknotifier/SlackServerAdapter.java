@@ -104,7 +104,7 @@ public class SlackServerAdapter extends BuildServerAdapter {
 
         if( committersString.length() > 0 )
         {
-            committersString.deleteCharAt(committersString.length()-1); //remove the last ,
+            committersString.deleteCharAt(committersString.length()-2); //remove the last ,
             int lastCommaIndex = committersString.lastIndexOf(",");
 
             if(lastCommaIndex >= 0)
